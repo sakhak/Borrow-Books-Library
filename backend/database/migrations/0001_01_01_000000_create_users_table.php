@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use League\CommonMark\Reference\Reference;
 
 return new class extends Migration
 {
@@ -12,13 +13,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id( 'user_id');
+            $table->unsignedBigInteger('role_id')->nullable()->default(1);
+            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('full_name');                        
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('phone');
+            $table->unsignedBigInteger('age')->check('age >= 4 and age <= 100');
+            $table->enum('gender', ['male', 'female','other'])->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('address')->nullable;
+            $table->string('image')->nullable;
+            $table->boolean('status');
             $table->timestamps();
+
+
+            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
+            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
