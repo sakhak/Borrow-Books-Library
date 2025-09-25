@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('full_name');
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->date('date_of_birth');
             $table->decimal('salary' , 7,2);
             $table->date('hire_date');

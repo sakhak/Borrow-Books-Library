@@ -16,7 +16,7 @@ class CreateEmployee extends Controller
             'first_name' => 'required|string' ,
             'last_name' => 'required|string',
             'full_name' => 'required|string',
-            'phone' => 'required|string',
+            'phone' => 'required|string|unique:employees,phone',
             'date_of_birth' => 'required|date' ,
             'salary' => 'required|numeric|min:0|max:99999.99',
             'hire_date' => 'required|date' ,
@@ -27,7 +27,6 @@ class CreateEmployee extends Controller
 
         
         $imagePath = null ;
-
         if($request->hasFile('image')){
                 $imagePath = $request->file('image')->store('employees' , 'public');
             };
