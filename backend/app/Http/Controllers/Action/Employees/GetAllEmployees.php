@@ -8,13 +8,12 @@ use Illuminate\Http\Request;
 
 class GetAllEmployees extends Controller
 {
-    public function getAllEmployee(Request $request){
+    public function getAllEmployee(){
         return $this->get();
     }
 
     private function get(){
         $employee = Employee::all();
-
         return response()->json([
             "employees" => $employee
         ], 201);

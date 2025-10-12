@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('address')->nullable;
             $table->string('image')->nullable;
-            $table->boolean('status');
+            $table->boolean('status')->nullable();
             $table->timestamps();
 
 

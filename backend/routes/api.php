@@ -6,6 +6,7 @@ use App\Http\Controllers\Action\Employees\CreateEmployee;
 use App\Http\Controllers\Action\Employees\DeleteEmployee;
 use App\Http\Controllers\Action\Employees\GetAllEmployees;
 use App\Http\Controllers\Action\Employees\UpdateEmployees;
+use App\Http\Controllers\Action\User\GetSingleUser;
 use App\Http\Controllers\Action\User\UpdateUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,19 +16,16 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('register' , [RegisterController::class , 'register']);
-Route::post('login', [LoginController::class , 'login']);
+Route::post('register', [RegisterController::class, 'register']);
+Route::post('login', [LoginController::class, 'login']);
 
 
+// ✅ FIXED - Removed "middleware:" label
 Route::middleware(['auth:api'])->group(function() {
-
-    
-});
+    Route::get('getuserdata', [GetSingleUser::class, 'getSingleUser']);
     Route::post('createemployee', [CreateEmployee::class, 'createEmployee']);
-    Route::get('getemployee' , [GetAllEmployees::class , 'getAllEmployee']);
-    Route::put('updateemployees/{id}' , [UpdateEmployees::class , 'updateEmployees']);
-
-    Route::delete('deleteemployee/{id}' , [DeleteEmployee::class,'deleteEmployee']);
-
+    Route::get('getemployee', [GetAllEmployees::class, 'getAllEmployee']);
+    Route::put('updateemployees/{id}', [UpdateEmployees::class, 'updateEmployees']);
+    Route::delete('deleteemployee/{id}', [DeleteEmployee::class, 'deleteEmployee']);
     Route::put('updateuser/{id}', [UpdateUser::class, 'updateUser']);
-
+});

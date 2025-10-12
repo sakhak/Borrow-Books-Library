@@ -8,12 +8,19 @@ import { FaUserClock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaClipboardCheck } from "react-icons/fa";
 import { FaPlus, FaList, FaEdit, FaTrash } from "react-icons/fa";
-
+import { request } from "../../utils/request";
+import Cookies from "js-cookie";
+import config from "../../utils/config";
+import LoadingComponent from "../loading/LoadingSpin";
 function MainLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [expandedMenus, setExpandedMenus] = useState({});
-
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({
+    name: "",
+    image: "",
+  });
   const [sideBarLink] = useState([
     {
       key: "dashboard",
@@ -128,7 +135,32 @@ function MainLayout() {
       ],
     },
   ]);
+  const getUserAllData = async () => {
+    try {
+      setLoading(true);
+      const res = await request("/getuserdata", "GET");
+      setLoading(false);
+      if (res && res.data) {
+        setUser({
+          name: res.data.full_name,
+          image: res.data.image,
+        });
+      }else{
+        setUser({
+          name: "",
+          image: ""
+        })
+      }
+    } catch {
+      console.log("User NOt Found");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    getUserAllData();
+  }, []);
   // Auto-expand menu if current route is a submenu item
   useEffect(() => {
     const currentPath = location.pathname;
@@ -164,13 +196,13 @@ function MainLayout() {
     if (navItem.subItems) {
       // Prevent navigation for items with submenus
       e.preventDefault();
-      
+
       // Toggle submenu expansion
       setExpandedMenus((prev) => ({
         ...prev,
         [navItem.key]: !prev[navItem.key],
       }));
-      
+
       // Navigate to main route
       navigate(navItem.route);
     }
@@ -179,30 +211,34 @@ function MainLayout() {
   // Get current page name for header
   const getCurrentPageName = () => {
     const currentPath = location.pathname;
-    
+
     // Check main routes first
     const mainRoute = sideBarLink.find((link) => link.route === currentPath);
     if (mainRoute) return mainRoute.name;
-    
+
     // Check sub routes
     for (const navItem of sideBarLink) {
       if (navItem.subItems) {
-        const subRoute = navItem.subItems.find((sub) => sub.route === currentPath);
+        const subRoute = navItem.subItems.find(
+          (sub) => sub.route === currentPath
+        );
         if (subRoute) return subRoute.name;
       }
     }
-    
+
     return "Page";
   };
 
   return (
     <div className="w-screen h-screen flex bg-gray-100">
+      {loading && <LoadingComponent/>}
+
       {/* Sidebar */}
-      <div className="w-80 bg-blue-600 h-screen shadow-xl">
+      <div className="w-80 bg-main h-screen ">
         {/* Header */}
-        <div className="h-20 bg-blue-800 flex items-center justify-center px-6">
-          <HiLibrary className="w-8 h-8 text-white mr-3" />
-          <h1 className="text-white font-bold text-2xl">Book Store</h1>
+        <div className="h-20 bg-main flex items-center justify-center px-6">
+          <HiLibrary className="w-8 h-8 text-icon mr-3" />
+          <h1 className="text-text-white font-bold text-2xl">Book Store</h1>
         </div>
 
         {/* Navigation */}
@@ -215,21 +251,23 @@ function MainLayout() {
                   <div
                     className={`flex items-center justify-center px-6 py-4 transition-all duration-200 group cursor-pointer ${
                       isActiveLink(navItem.route) || hasActiveSubItem(navItem)
-                        ? "bg-blue-800 text-white shadow-lg border-l-4 border-white"
-                        : "text-blue-100 hover:bg-blue-700 hover:text-white"
+                        ? "bg-main text-text-white  border-l-4 border-text-white"
+                        : "text-text-white hover:bg-main hover:text-text-white"
                     }`}
                     onClick={(e) => handleMainMenuClick(navItem, e)}
                   >
                     <span
                       className={`mr-3 transition-colors ${
                         isActiveLink(navItem.route) || hasActiveSubItem(navItem)
-                          ? "text-white"
-                          : "text-blue-200 group-hover:text-white"
+                          ? "text-icon"
+                          : "text-icon group-hover:text-icon"
                       }`}
                     >
                       {navItem.icon}
                     </span>
-                    <span className="text-lg font-medium flex-1 text-center">{navItem.name}</span>
+                    <span className="text-lg font-medium flex-1 text-center">
+                      {navItem.name}
+                    </span>
                     <span className="transition-transform duration-200">
                       {expandedMenus[navItem.key] ? (
                         <FaChevronDown className="w-4 h-4" />
@@ -243,15 +281,15 @@ function MainLayout() {
                     to={navItem.route}
                     className={`flex items-center justify-center px-6 py-4 transition-all duration-200 group ${
                       isActiveLink(navItem.route)
-                        ? "bg-blue-800 text-white shadow-lg border-l-4 border-white"
-                        : "text-blue-100 hover:bg-blue-700 hover:text-white"
+                        ? "bg-main text-text-white border-l-4 border-text-white"
+                        : "text-text-white hover:bg-main hover:text-text-white"
                     }`}
                   >
                     <span
                       className={`mr-3 transition-colors ${
                         isActiveLink(navItem.route)
-                          ? "text-white"
-                          : "text-blue-200 group-hover:text-white"
+                          ? "text-icon"
+                          : "text-icon group-hover:text-icon"
                       }`}
                     >
                       {navItem.icon}
@@ -262,27 +300,29 @@ function MainLayout() {
 
                 {/* Submenu Items */}
                 {navItem.subItems && expandedMenus[navItem.key] && (
-                  <ul className="bg-blue-700">
+                  <ul className="bg-main/80">
                     {navItem.subItems.map((subItem) => (
                       <li key={subItem.key}>
                         <Link
                           to={subItem.route}
                           className={`flex items-center px-12 py-3 transition-all duration-200 group ${
                             isActiveLink(subItem.route)
-                              ? "bg-blue-800 text-white shadow-lg border-l-4 border-white"
-                              : "text-blue-100 hover:bg-blue-600 hover:text-white"
+                              ? "bg-main text-text-white border-l-4 border-text-white"
+                              : "text-text-white hover:bg-main/30 hover:text-text-white"
                           }`}
                         >
                           <span
                             className={`mr-3 transition-colors ${
                               isActiveLink(subItem.route)
-                                ? "text-white"
-                                : "text-blue-200 group-hover:text-white"
+                                ? "text-icon"
+                                : "text-icon group-hover:text-icon"
                             }`}
                           >
                             {subItem.icon}
                           </span>
-                          <span className="text-sm font-medium">{subItem.name}</span>
+                          <span className="text-sm font-medium">
+                            {subItem.name}
+                          </span>
                         </Link>
                       </li>
                     ))}
@@ -297,12 +337,26 @@ function MainLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
-        <div className="h-20 bg-white shadow-sm border-b border-gray-200 flex items-center px-6">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="h-20 bg-text-white  border-b border-gray-200 flex items-center justify-between px-6">
+          <h2 className="text-xl font-semibold text-main">
             {getCurrentPageName()}
           </h2>
+          <div className="flex items-center justify-center text-2xl font-semibold">
+            <h2 className="mr-4">{user.name}</h2>
+            <div className="w-12 h-12 bg-main rounded-full overflow-hidden flex items-center justify-center">
+              {user.image ? (
+                <img
+                  src={config.image_url + user.image}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <FaUser className="w-6 h-6 text-white" />
+              )}
+            </div>
+          </div>
         </div>
-        
+
         {/* Page Content */}
         <div className="flex-1 overflow-auto bg-gray-50">
           <Outlet />
