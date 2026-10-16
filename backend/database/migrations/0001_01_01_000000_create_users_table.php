@@ -25,9 +25,9 @@ return new class extends Migration
             $table->unsignedBigInteger('age')->check('age >= 4 and age <= 100');
             $table->enum('gender', ['male', 'female','other'])->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->string('address')->nullable;
-            $table->string('image')->nullable;
-            $table->boolean('status');
+            $table->string('address')->nullable();
+            $table->string('image')->nullable();
+            $table->boolean('status')->nullable();
             $table->timestamps();
 
 

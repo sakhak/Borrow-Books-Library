@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->decimal('salary' , 7,2);
             $table->date('hire_date');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

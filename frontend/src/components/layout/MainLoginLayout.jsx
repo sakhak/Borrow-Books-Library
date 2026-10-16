@@ -1,58 +1,34 @@
 import React from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import { FaBook } from "react-icons/fa6";
 
 function MainLoginLayout() {
-  const location = useLocation();
-
-  // Check if we are on /register
-  const isRegister = location.pathname === "/register";
-
   return (
-    <div className="min-h-screen flex">
-      {/* Left side (branding / welcome message) */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center p-10">
-        <div className="max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Welcome Back 👋</h1>
-          <p className="text-lg opacity-90">
-            Access your Web Application
-          </p>
-          <div className="mt-8 space-x-4">
-            <Link
-              to="/login"
-              className={`px-6 py-2 rounded-lg font-medium shadow transition ${
-                isRegister
-                  ? "bg-white text-indigo-600 hover:bg-gray-100"
-                  : "bg-white text-indigo-600"
-              }`}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className={`px-6 py-2 rounded-lg font-medium border transition ${
-                isRegister
-                  ? "bg-indigo-50 text-indigo-700 border-indigo-200"
-                  : "border-white hover:bg-white hover:text-indigo-600"
-              }`}
-            >
-              Register
-            </Link>
+    // MODIFIED THIS LINE: Replaced "justify-between items-center" with "min-h-screen"
+    <div className="flex min-h-screen">
+      <div className=" flex bg-main w-1/2 h-auto justify-center ">
+        <div className="flex items-center flex-col mt-20">
+          <h1 className="text-7xl text-text-white font-bold p-2 mb-5">
+            Angkor Book
+          </h1>
+          <div className="flex flex-col w-full mb-20">
+            <p className="text-text-white text-xl">
+              Borrow, read, and return with ease.
+            </p>
+            <p className="text-text-white text-xl ">
+              Log in to access your community library.
+            </p>
           </div>
+          <FaBook className="w-50 h-50 text-text-white" />
         </div>
       </div>
-
-      {/* Right side (form area) */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-6">
-        <div
-          className={`w-full max-w-md shadow-lg rounded-xl p-8 transition duration-300 ${
-            isRegister ? "bg-purple-50" : "bg-white"
-          }`}
-        >
-          <Outlet />
+      <div className="flex w-1/2 items-center justify-center">
+        <div className="p-10 `w-600">
+          <Outlet className="h-auto" />
+          <div></div>
         </div>
       </div>
     </div>
   );
 }
-
 export default MainLoginLayout;

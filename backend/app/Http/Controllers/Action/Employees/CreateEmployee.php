@@ -43,7 +43,7 @@ class CreateEmployee extends Controller
             'salary' => $request->salary,
             'hire_date' => $request->hire_date ,
             'image' => $imagePath,
-            'status' => $request->status,
+            'status' => $request->boolean('status', true),
         ]);
 
         return response()->json([
