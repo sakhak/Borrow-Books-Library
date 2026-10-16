@@ -22,7 +22,7 @@ class UpdateUser extends Controller
             'last_name' => 'required|string',
             'full_name' => 'required|string',
             'email' => 'required|string|email|unique:users,email,'. $id . ',user_id',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8|confirmed',
             'phone' => 'required',
             'age' => 'required|integer',
             'gender'        => 'required|in:male,female,other',
@@ -33,6 +33,12 @@ class UpdateUser extends Controller
         ]);
 
         $user = User::findOrFail($id);
+
+        // Only change the password when a new one was supplied.
+        if (empty($validated['password'])) {
+            unset($validated['password']);
+        }
+        unset($validated['image']);
 
         if($request->hasFile('image')) {
             if($user->image && Storage::disk('public')->exists($user->image)){

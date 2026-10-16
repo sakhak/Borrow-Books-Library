@@ -26,7 +26,7 @@ class GetSingleUser extends Controller
         }catch(JWTException $e){
             return response()->json([
                 'error' => 'Token is invalid or expired'
-            ], $e);
+            ], 401);
         }
                 return response()->json([
             'success' => true,
