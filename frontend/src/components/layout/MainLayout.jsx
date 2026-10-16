@@ -7,7 +7,7 @@ import { HiLibrary } from "react-icons/hi";
 import { FaUserClock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaClipboardCheck } from "react-icons/fa";
-import { FaPlus, FaList, FaEdit, FaTrash } from "react-icons/fa";
+import { FaTags, FaUsers, FaExchangeAlt, FaSignOutAlt } from "react-icons/fa";
 import { request } from "../../utils/request";
 import Cookies from "js-cookie";
 import config from "../../utils/config";
@@ -22,119 +22,20 @@ function MainLayout() {
     image: "",
   });
   const [sideBarLink] = useState([
-    {
-      key: "dashboard",
-      route: "/",
-      name: "Dashboard",
-      icon: <BiSolidDashboard className="w-6 h-6" />,
-    },
-    {
-      key: "author",
-      route: "/author",
-      name: "Author",
-      icon: <FaBookOpenReader className="w-6 h-6" />,
-      subItems: [
-        {
-          key: "author-list",
-          route: "/author/list",
-          name: "Author List",
-          icon: <FaList className="w-4 h-4" />,
-        },
-        {
-          key: "author-add",
-          route: "/author/add",
-          name: "Add Author",
-          icon: <FaPlus className="w-4 h-4" />,
-        },
-      ],
-    },
-    {
-      key: "book",
-      route: "/book",
-      name: "Book",
-      icon: <FaBookOpen className="w-6 h-6" />,
-      subItems: [
-        {
-          key: "book-list",
-          route: "/book/list",
-          name: "Book List",
-          icon: <FaList className="w-4 h-4" />,
-        },
-        {
-          key: "book-add",
-          route: "/book/add",
-          name: "Add Book",
-          icon: <FaPlus className="w-4 h-4" />,
-        },
-        {
-          key: "book-categories",
-          route: "/book/categories",
-          name: "Categories",
-          icon: <FaEdit className="w-4 h-4" />,
-        },
-      ],
-    },
-    {
-      key: "employee",
-      route: "/employee",
-      name: "Employee",
-      icon: <FaUserClock className="w-6 h-6" />,
-      subItems: [
-        {
-          key: "employee-list",
-          route: "/employee/list",
-          name: "Employee List",
-          icon: <FaList className="w-4 h-4" />,
-        },
-        {
-          key: "employee-add",
-          route: "/employee/add",
-          name: "Add Employee",
-          icon: <FaPlus className="w-4 h-4" />,
-        },
-      ],
-    },
-    {
-      key: "inventory",
-      route: "/inventory",
-      name: "Inventory",
-      icon: <FaClipboardCheck className="w-6 h-6" />,
-      subItems: [
-        {
-          key: "inventory-stock",
-          route: "/inventory/stock",
-          name: "Stock Management",
-          icon: <FaList className="w-4 h-4" />,
-        },
-        {
-          key: "inventory-orders",
-          route: "/inventory/orders",
-          name: "Orders",
-          icon: <FaEdit className="w-4 h-4" />,
-        },
-      ],
-    },
-    {
-      key: "user",
-      route: "/user",
-      name: "User",
-      icon: <FaUser className="w-6 h-6" />,
-      subItems: [
-        {
-          key: "user-list",
-          route: "/user/list",
-          name: "User List",
-          icon: <FaList className="w-4 h-4" />,
-        },
-        {
-          key: "user-add",
-          route: "/user/add",
-          name: "Add User",
-          icon: <FaPlus className="w-4 h-4" />,
-        },
-      ],
-    },
+    { key: "dashboard", route: "/", name: "Dashboard", icon: <BiSolidDashboard className="w-6 h-6" /> },
+    { key: "author", route: "/author", name: "Authors", icon: <FaBookOpenReader className="w-6 h-6" /> },
+    { key: "book", route: "/book", name: "Books", icon: <FaBookOpen className="w-6 h-6" /> },
+    { key: "category", route: "/category", name: "Categories", icon: <FaTags className="w-6 h-6" /> },
+    { key: "member", route: "/member", name: "Members", icon: <FaUsers className="w-6 h-6" /> },
+    { key: "order", route: "/order", name: "Borrowing", icon: <FaExchangeAlt className="w-6 h-6" /> },
+    { key: "inventory", route: "/inventory", name: "Inventory", icon: <FaClipboardCheck className="w-6 h-6" /> },
+    { key: "employee", route: "/employee", name: "Employees", icon: <FaUserClock className="w-6 h-6" /> },
+    { key: "user", route: "/user", name: "Users", icon: <FaUser className="w-6 h-6" /> },
   ]);
+  const handleLogout = () => {
+    Cookies.remove("access_token");
+    navigate("/login", { replace: true });
+  };
   const getUserAllData = async () => {
     try {
       setLoading(true);
@@ -234,7 +135,7 @@ function MainLayout() {
       {loading && <LoadingComponent/>}
 
       {/* Sidebar */}
-      <div className="w-80 bg-main h-screen ">
+      <div className="w-72 bg-main h-screen flex flex-col">
         {/* Header */}
         <div className="h-20 bg-main flex items-center justify-center px-6">
           <HiLibrary className="w-8 h-8 text-icon mr-3" />
@@ -242,7 +143,7 @@ function MainLayout() {
         </div>
 
         {/* Navigation */}
-        <nav className="py-6">
+        <nav className="py-6 flex-1 overflow-auto">
           <ul className="space-y-1">
             {sideBarLink.map((navItem) => (
               <li key={navItem.key}>
@@ -332,6 +233,14 @@ function MainLayout() {
             ))}
           </ul>
         </nav>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-center gap-3 px-6 py-4 text-text-white border-t border-white/30 hover:bg-white/10"
+        >
+          <FaSignOutAlt className="w-5 h-5" />
+          <span className="text-lg font-medium">Logout</span>
+        </button>
       </div>
 
       {/* Main Content */}

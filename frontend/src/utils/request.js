@@ -32,7 +32,11 @@ export const request = (url = "", method = "", data = {}) => {
       return res.data;
     })
     .catch((error) => {
-      console.log(error);
+      // Expired or invalid token on a protected call -> clear it and go back to login
+      if (error.response?.status === 401 && url !== "/login") {
+        Cookies.remove("access_token");
+        if (window.location.pathname !== "/login") window.location.href = "/login";
+      }
       throw error;
     });
 };
