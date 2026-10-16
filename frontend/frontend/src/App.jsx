@@ -1,0 +1,46 @@
+import MainLayout from "./components/layout/MainLayout";
+import NotFound404 from "./page/404/NotFound404";
+import Author from "./page/admin/author/Author";
+import Book from "./page/admin/book/Book";
+import Category from "./page/admin/book/Category";
+import Member from "./page/admin/member/Member";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Employees from "./page/admin/employee/Employees";
+import Inventory from "./page/admin/inventory/Inventory";
+import Order from "./page/admin/order/Order";
+import User from "./page/admin/user/User";
+import MainLoginLayout from "./components/layout/MainLoginLayout";
+import LoginPage from "./page/admin/auth/LoginPage";
+import RegisterPage from "./page/admin/auth/RegisterPage";
+import HomePage from "./page/admin/home/HomePage";
+import "./index.css";
+import RouteProtected from "./components/routeProtected/RouteProtected";
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<RouteProtected />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/author" element={<Author />} />
+            <Route path="/book" element={<Book />} />
+            <Route path="/category" element={<Category />} />
+            <Route path="/member" element={<Member />} />
+            <Route path="/employee" element={<Employees />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/user" element={<User />} />
+            <Route path="*" element={<NotFound404 />} />
+          </Route>
+        </Route>
+        <Route element={<MainLoginLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="*" element={<NotFound404 />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
